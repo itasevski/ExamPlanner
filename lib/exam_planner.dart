@@ -7,24 +7,33 @@ import 'package:intl/intl.dart' as intl;
 
 import 'add_exam.dart';
 import 'calendar.dart';
+import 'login.dart';
 
 typedef ExamAddCallback = void Function(String subjectName, String dateAndTime);
 typedef CalendarCallback = List<String> Function(DateTime day);
 
 class ExamPlanner extends StatefulWidget {
+  final String loggedInUser;
+
+  const ExamPlanner(this.loggedInUser);
+
   @override
   State<StatefulWidget> createState() {
-    return _ExamPlannerState();
+    return _ExamPlannerState(this.loggedInUser);
   }
 }
 
 class _ExamPlannerState extends State<ExamPlanner> {
   List<dynamic> exams = [];
+  String loggedInUser;
+
+  _ExamPlannerState(this.loggedInUser);
 
   @override
   void initState() {
-    _getExams();
     super.initState();
+
+    _getExams();
   }
 
   void _addExam(String subjectName, String dateAndTime) {
@@ -55,8 +64,8 @@ class _ExamPlannerState extends State<ExamPlanner> {
 
   void _getExams() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    if (preferences.containsKey("exams")) {
-      String? jsonExams = preferences.getString("exams");
+    if (preferences.containsKey(loggedInUser)) {
+      String? jsonExams = preferences.getString(loggedInUser);
       var listExams = jsonDecode(jsonExams!);
       setState(() {
         exams = listExams;
@@ -66,10 +75,10 @@ class _ExamPlannerState extends State<ExamPlanner> {
 
   void _setExams() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    if (preferences.containsKey("exams")) {
-      preferences.remove("exams");
+    if (preferences.containsKey(loggedInUser)) {
+      preferences.remove(loggedInUser);
     }
-    preferences.setString("exams", jsonEncode(exams));
+    preferences.setString(loggedInUser, jsonEncode(exams));
   }
 
   void _addExamForm() {
@@ -82,19 +91,31 @@ class _ExamPlannerState extends State<ExamPlanner> {
         MaterialPageRoute(builder: (context) => Calendar(_getExamsForDay)));
   }
 
+  void _clearPreferences() async {
+    // helper function for clearing SharedPreferences data
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Exam Planner", style: TextStyle(fontSize: 25)),
-          actions: [
-            IconButton(
-                icon: Icon(Icons.calendar_today_rounded),
-                onPressed: _viewCalendar),
-            IconButton(
-                icon: Icon(Icons.add_box_rounded), onPressed: _addExamForm)
-          ],
-        ),
+            title: Text("Exam Planner", style: TextStyle(fontSize: 25)),
+            actions: [
+              IconButton(
+                  icon: Icon(Icons.calendar_today_rounded),
+                  onPressed: _viewCalendar),
+              IconButton(
+                  icon: Icon(Icons.add_box_rounded), onPressed: _addExamForm),
+              IconButton(icon: Icon(Icons.logout), onPressed: () {
+                setState(() {
+                  this.loggedInUser = "";
+                });
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+              }),
+            ]),
         body: _buildBody());
   }
 
@@ -111,7 +132,7 @@ class _ExamPlannerState extends State<ExamPlanner> {
                   leading: Icon(Icons.access_time_filled),
                   title: Text(exams[index]["subjectName"].toString(),
                       style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   subtitle: Text(exams[index]["dateAndTime"].toString(),
                       style: TextStyle(fontSize: 17)),
                   trailing: Container(
