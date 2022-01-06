@@ -2,6 +2,9 @@
 
 Flutter application for planning midterms and final exams.
 
+- For your Google API key, visit https://developers.google.com/maps/documentation/javascript/get-api-key.
+- For channel information about local notifications, input whatever string you want. If any errors are received, just input "testchannel" and then the property of the channel (eg. for channel name input "testchannelname").
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

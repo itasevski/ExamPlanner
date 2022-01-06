@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'dart:core';
+
 import 'exam_planner.dart';
 import 'datetime_picker.dart';
 
@@ -17,6 +18,7 @@ class AddExam extends StatefulWidget {
 
 class _AddExamState extends State<AddExam> {
   final _formKey = GlobalKey<FormState>();
+
   final subjectNameController = TextEditingController();
 
   DateTime examDate = DateTime.now();
@@ -41,7 +43,7 @@ class _AddExamState extends State<AddExam> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Exam successfully added')),
+        const SnackBar(content: Text('Exam successfully added.')),
       );
     }
   }

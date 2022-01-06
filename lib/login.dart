@@ -45,19 +45,16 @@ class _LoginState extends State<Login> {
         ),
         body: Form(
           key: _formKey,
-          child: Column(children: [
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(
-              margin:
-                  EdgeInsets.only(top: MediaQuery.of(context).size.height / 5),
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 40),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(200),
               ),
               child: Center(
                 child: Text("ExamPlanner Login",
                     style:
-                        TextStyle(fontSize: 50, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
               ),
             ),
             validationError
@@ -144,7 +141,11 @@ class _LoginState extends State<Login> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ExamPlanner(
-                                usernameController.text + "-current")));
+                                usernameController.text + "-current",
+                                usernameController.text + "_my_home_location",
+                                usernameController.text + "_my_home_latitude",
+                                usernameController.text + "_my_home_longitude",
+                                usernameController.text + "-current-events")));
                   }),
             ),
           ]),

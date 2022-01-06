@@ -17,7 +17,7 @@ class _CalendarState extends State<Calendar> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  late ValueNotifier<List<String>> _selectedExams;
+  late ValueNotifier<List<String>> _selectedObligations;
 
   CalendarCallback callback;
 
@@ -27,10 +27,10 @@ class _CalendarState extends State<Calendar> {
   void initState() {
     super.initState();
 
-    _selectedExams = ValueNotifier(_getExamsForDay(DateTime.now()));
+    _selectedObligations = ValueNotifier(_getObligationsForDay(DateTime.now()));
   }
 
-  List<String> _getExamsForDay(DateTime day) {
+  List<String> _getObligationsForDay(DateTime day) {
     return callback(day);
   }
 
@@ -52,7 +52,8 @@ class _CalendarState extends State<Calendar> {
                     setState(() {
                       _selectedDay = selectedDay;
                       _focusedDay = focusedDay;
-                      _selectedExams.value = _getExamsForDay(selectedDay);
+                      _selectedObligations.value =
+                          _getObligationsForDay(selectedDay);
                     });
                   }
                 },
@@ -66,13 +67,13 @@ class _CalendarState extends State<Calendar> {
                   _focusedDay = focusedDay;
                 },
                 eventLoader: (day) {
-                  return _getExamsForDay(
+                  return _getObligationsForDay(
                       day); // ako za nekoj den od kalendarot se vrati lista cij size > 0, go markira denot vo kalendarot (ima exam/s na toj den).
                 }),
             const SizedBox(height: 8.0),
             Expanded(
               child: ValueListenableBuilder<List<String>>(
-                valueListenable: _selectedExams,
+                valueListenable: _selectedObligations,
                 builder: (context, value, _) {
                   return ListView.builder(
                     itemCount: value.length,
